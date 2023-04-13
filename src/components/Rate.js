@@ -6,8 +6,9 @@ import { BsEmojiSmileFill } from "react-icons/bs";
 import { ImHappy2 } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Questions from "./Questions";
+import Questions from "./admin/Questions";
 const Rate = ({ setCurrentIndex, currentIndex }) => {
+  const [votes, setVotes] = useState([]);
   const navigate = useNavigate();
 
   const [questions, setQuestions] = useState([]);
@@ -19,7 +20,7 @@ const Rate = ({ setCurrentIndex, currentIndex }) => {
     }
   }, []);
 
-  const handleCurrentIndex = (id) => {
+  const handleCurrentIndex = () => {
     if (currentIndex < questions.length) {
       setCurrentIndex(currentIndex + 1);
     }
@@ -65,6 +66,44 @@ const Rate = ({ setCurrentIndex, currentIndex }) => {
     },
   ];
 
+  const handleQuestionVote = (vote) => {
+    const feedback = JSON.parse(localStorage.getItem("feedback")) || [];
+    const arr =
+      feedback?.find((x) => x.question === questions[currentIndex].question)
+        ?.votes || [];
+    if (arr.length > 0) {
+      const currentFeedbackIndex = feedback.indexOf(
+        feedback.find((x) => x.question === questions[currentIndex].question)
+      );
+
+      arr.push(vote);
+
+      feedback[currentFeedbackIndex].votes = arr;
+    } else {
+      const newScores = {
+        votes: [vote],
+        question: questions[currentIndex].question,
+        questionId: questions[currentIndex].id,
+      };
+      feedback.push(newScores);
+    }
+
+    localStorage.setItem("feedback", JSON.stringify(feedback));
+
+    // setVotes([
+    //   ...votes,
+    //   {
+    //     votes: scores,
+    //     question: questions[currentIndex].question,
+    //     questionId: questions[currentIndex].id,
+    //   },
+    // ]);
+
+    // const feedback = JSON.parse(localStorage.getItem("feedback"));
+
+    // console.log(feedback);
+  };
+
   return (
     <>
       <Questions currentIndex={currentIndex} questions={questions} />
@@ -73,7 +112,10 @@ const Rate = ({ setCurrentIndex, currentIndex }) => {
           return (
             <div key={id} className="icon_container">
               <div
-                onClick={() => handleCurrentIndex(element.vote)}
+                onClick={() => {
+                  handleCurrentIndex();
+                  handleQuestionVote(element.vote);
+                }}
                 className="icon"
                 style={{ cursor: "pointer", color: "#333" }}
               >

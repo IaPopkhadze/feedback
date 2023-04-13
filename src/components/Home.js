@@ -7,15 +7,15 @@ const Home = () => {
     className="home_container"
     >
       <div className="home">
-        <Link to="statistic" className="child_container">
+        {/* <Link to="statistic" className="child_container">
           სტატისტიკა
-        </Link>
+        </Link> */}
         <Link to="rate" className="child_container">
           შეფასება
         </Link>
-        <Link to="questions" className="child_container">
+        {/* <Link to="questions" className="child_container">
           კითხვები
-        </Link>
+        </Link> */}
       </div>
       <div className="image_container">
         <img src="./images/FLAG.png" className="image" alt="" />
